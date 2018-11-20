@@ -18,6 +18,7 @@ namespace RocketGame
         private const int AMOUNT_OF_ASTEROIDS_TASK = 2;
         private List<Task> tasks = null;
 
+        private Random random = null;
         private int fallingSpeed;
 
 
@@ -33,8 +34,9 @@ namespace RocketGame
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            this.random = new Random();
             this.tasks = new List<Task>();
-            this.fallingSpeed = 5;
+            this.fallingSpeed = 1;
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -53,10 +55,15 @@ namespace RocketGame
             {
                 this.tasks.Add(
                     Task.Factory.StartNew(
-                        () => this.AsteroidLaunch(10)
+                        () => this.AsteroidLaunch(this.GetRandomXCoordinate())
                         )
                     );
             }
+        }
+
+        private int GetRandomXCoordinate()
+        {
+            return random.Next(this.ClientSize.Width - SIZE_ASTEROID);
         }
 
         private void AsteroidLaunch(int x)
