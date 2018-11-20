@@ -14,8 +14,11 @@ namespace RocketGame
 {
     public partial class MainForm : Form
     {
+        private const int SIZE_ASTEROID = 20;
         private const int AMOUNT_OF_ASTEROIDS_TASK = 2;
         private List<Task> tasks = null;
+
+        private int fallingSpeed;
 
 
         // temp
@@ -31,6 +34,7 @@ namespace RocketGame
         private void MainForm_Load(object sender, EventArgs e)
         {
             this.tasks = new List<Task>();
+            this.fallingSpeed = 5;
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -62,8 +66,9 @@ namespace RocketGame
             PictureBox box = this.CreateAsteroid(x);
 
             // TODO: включить падение астероида.
-            while (box.Location.Y != this.ClientSize.Height - 20)
+            while (box.Location.Y != this.ClientSize.Height)
             {
+                Thread.Sleep(this.fallingSpeed);
                 box.Location = new Point(box.Location.X, box.Location.Y + 1);
             }
         }
@@ -72,8 +77,8 @@ namespace RocketGame
         {
             PictureBox pictureBox = new PictureBox();
             pictureBox.BackColor = Color.Black;
-            pictureBox.Size = new Size(20, 20);
-            pictureBox.Location = new Point(x, 0);
+            pictureBox.Size = new Size(SIZE_ASTEROID, SIZE_ASTEROID);
+            pictureBox.Location = new Point(x, 0 - SIZE_ASTEROID);
             pictureBox.Visible = true;
             
             this.Invoke(new Action<PictureBox>(this.ShowAsteroid), pictureBox);
