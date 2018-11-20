@@ -26,10 +26,18 @@ namespace RocketGame
 
         private Timer timer = null;
 
+        private PictureBox pictureBoxRocket = null;
+
+
+        private bool isGameContinues = true;
+
+        // tes
+        Rectangle rectRocket = new Rectangle();
+
 
         // temp
         //private PictureBox pictureBox = null;
-        private bool temp = false;
+        //private bool temp = false;
 
         public MainForm()
         {
@@ -43,17 +51,33 @@ namespace RocketGame
             this.random = new Random();
             this.tasks = new List<Task>();
             this.fallingSpeed = 1;
+
+
+            // test
+
         }
 
         private void AddRocket()
         {
-            PictureBox pictureBox = new PictureBox();
-            pictureBox.BackColor = Color.Green;
-            pictureBox.Size = new Size(SIZE_ROCKET_X, SIZE_ROCKET_Y);
-            pictureBox.Location = this.StartPointRocket();
-            pictureBox.Visible = true;
+            /*PictureBox */pictureBoxRocket = new PictureBox();
+            pictureBoxRocket.BackColor = Color.Green;
+            pictureBoxRocket.Size = new Size(SIZE_ROCKET_X, SIZE_ROCKET_Y);
+            pictureBoxRocket.Location = this.StartPointRocket();
+            pictureBoxRocket.Visible = true;
 
-            this.Controls.Add(pictureBox);
+            this.Controls.Add(pictureBoxRocket);
+
+            // test
+            pictureBoxRocket.LocationChanged += PictureBoxRocket_LocationChanged;
+
+            rectRocket = this.pictureBoxRocket.DisplayRectangle;
+            rectRocket.Location = this.pictureBoxRocket.Location;
+        }
+
+        private void PictureBoxRocket_LocationChanged(object sender, EventArgs e)
+        {
+            rectRocket = this.pictureBoxRocket.DisplayRectangle;
+            rectRocket.Location = this.pictureBoxRocket.Location;
         }
 
         private Point StartPointRocket()
@@ -68,11 +92,18 @@ namespace RocketGame
         {
             // Старт игры.
 
+            // Настройки по умолчанию.
+            this.isGameContinues = true;
+            //foreach (var item in collection)
+            //{
+
+            //}
+
             // Добавление ракеты.
             this.AddRocket();
 
             // Старт метода поверки столкновения.
-            Task taskIsCollision = Task.Factory.StartNew(this.CollisionCheck);
+            //Task taskIsCollision = Task.Factory.StartNew(this.CollisionCheck);
 
             TimerCallback timerCallback = new TimerCallback(TimerTick);
             /*Timer */
@@ -88,13 +119,67 @@ namespace RocketGame
             while (true)
             {
                 Thread.Sleep(100);
-                //Console.WriteLine("check ---------");
+                Console.WriteLine("check ---------");
 
-                if (this.temp)  // TODO: вместо temp реализация проверки наложения.
-                {
-                    timer.Change(Timeout.Infinite, 0);
-                }
+                //Control.ControlCollection collection = new Control.ControlCollection(this);
+                //this.Invoke(new Action<Control.ControlCollection>(TestMethod), collection);
+                //List<Control> controls = new List<Control>();
+                //this.Invoke(new Action<List<Control>>(TestMethod), controls);
+
+                //Rectangle rectRocket = this.pictureBoxRocket.DisplayRectangle;
+                //rectRocket.Location = this.pictureBoxRocket.Location;
+                //Console.WriteLine("=================");
+                //Console.WriteLine("=================" + controls.Count);
+
+                //foreach (var item in controls)
+                //{
+                //    if (item.GetContainerControl() is PictureBox)
+                //    {
+                //        Rectangle rectAsteroid = (item.GetContainerControl() as PictureBox).DisplayRectangle;
+                //        rectAsteroid.Location = (item.GetContainerControl() as PictureBox).Location;
+                //        Console.WriteLine("========================---------" + rectRocket.IntersectsWith(rectAsteroid));
+                //        if (rectRocket.IntersectsWith(rectAsteroid))
+                //        {
+                //            Console.WriteLine("========================---------");
+                //            timer.Change(Timeout.Infinite, 0);
+                //        }
+                //    }
+                //}
+
+
+                //for (int i = 0; i < controls.Count; i++)
+                //{
+                //    Console.WriteLine("---------------------" + this.Controls[i].GetType().Name);
+                //    if (controls[i] is PictureBox)
+                //    {
+                //        Rectangle rectAsteroid = (controls[i] as PictureBox).DisplayRectangle;
+                //        rectAsteroid.Location = (controls[i] as PictureBox).Location;
+                //        Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + rectRocket.IntersectsWith(rectAsteroid));
+                //        if (rectRocket.IntersectsWith(rectAsteroid))
+                //        {
+                //            Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                //            //timer.Change(Timeout.Infinite, 0);
+                //            timer.Dispose();
+                //        }
+                //    }
+                //}
             }
+        }
+
+        private void TestMethod(List<Control> obj)
+        {
+            //obj = this.Controls;
+            //obj.AddRange(this.Controls.Find(null, false));
+
+            foreach (Control item in this.Controls)
+            {
+                obj.Add(item);
+            }
+
+            //for (int i = 0; i < this.Controls.Count; i++)
+            //{
+            //    obj.Add(this.Controls[i]);
+            //}
         }
 
         private void TimerTick(object state)
@@ -135,9 +220,18 @@ namespace RocketGame
             while (box.Location.Y != this.ClientSize.Height)
             {
                 Thread.Sleep(this.fallingSpeed);
-                if (temp == false)
+                if (this.isGameContinues)  // TODO: разобратся с переменной temp
                 {
                     box.Location = new Point(box.Location.X, box.Location.Y + 1);
+
+                    Rectangle rectAsteroid = box.DisplayRectangle;
+                    rectAsteroid.Location = box.Location;
+                    if (rectRocket.IntersectsWith(rectAsteroid))
+                    {
+                        Console.WriteLine("========================---------");
+                        timer.Change(Timeout.Infinite, 0);
+                        this.isGameContinues = false;
+                    }
                 }
             }
 
@@ -167,12 +261,16 @@ namespace RocketGame
             this.Controls.Add(pictureBox);
         }
 
+
+
+
+        // Для тестирования.
         private void buttonStop_Click(object sender, EventArgs e)
         {
             // TODO: уничтожение таймера.
             //this.timer.Dispose();
 
-            temp = true;
+            isGameContinues = false;
         }
     }
 }
