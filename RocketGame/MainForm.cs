@@ -93,10 +93,29 @@ namespace RocketGame
             // Старт игры.
 
             // Настройки по умолчанию.
-            this.isGameContinues = true;
-            //foreach (var item in collection)
+            //this.isGameContinues = true;
+            //foreach (var item in this.Controls)
             //{
+            //    if (item is PictureBox)
+            //    {
+            //        this.Controls.Remove(item as PictureBox);
+            //    }
+            //}
 
+            //if (this.isGameContinues == false)
+            //{
+            //    Console.WriteLine("Controls.Count" + this.Controls.Count);
+            //    for (int i = 0; i < this.Controls.Count; i++)
+            //    {
+            //        Console.WriteLine(this.Controls[i].GetType().Name);
+            //        if (this.Controls[i] is PictureBox)
+            //        {
+            //            Console.WriteLine("remove " + i);
+            //            //this.Controls.RemoveAt(i);
+            //            (this.Controls[i] as PictureBox).Dispose();
+            //        }
+            //    }
+            //    this.isGameContinues = true;
             //}
 
             // Добавление ракеты.
@@ -220,17 +239,23 @@ namespace RocketGame
             while (box.Location.Y != this.ClientSize.Height)
             {
                 Thread.Sleep(this.fallingSpeed);
-                if (this.isGameContinues)  // TODO: разобратся с переменной temp
+                if (this.isGameContinues)
                 {
                     box.Location = new Point(box.Location.X, box.Location.Y + 1);
 
-                    Rectangle rectAsteroid = box.DisplayRectangle;
-                    rectAsteroid.Location = box.Location;
-                    if (rectRocket.IntersectsWith(rectAsteroid))
+                    if (this.pictureBoxRocket != null)
                     {
-                        Console.WriteLine("========================---------");
-                        timer.Change(Timeout.Infinite, 0);
-                        this.isGameContinues = false;
+                        Rectangle rectAsteroid = box.DisplayRectangle;
+                        rectAsteroid.Location = box.Location;
+                        if (rectRocket.IntersectsWith(rectAsteroid))
+                        {
+                            Console.WriteLine("========================---------");
+                            //timer.Change(Timeout.Infinite, 0);
+                            timer.Dispose();
+                            this.isGameContinues = false;
+                            MessageBox.Show("Game over");
+                            this.RocketFall();
+                        }
                     }
                 }
             }
@@ -241,6 +266,30 @@ namespace RocketGame
                 this.tasks.RemoveAt(0);
                 box.Dispose();  // удаление ненужного (упавшего) астероида.
             }
+        }
+
+        private void RocketFall()
+        {
+            // После ее падения 
+            // можно запустить падение оставшихся астероидов
+            // после чего они уничтожатся, и игру можно будет начать заново.
+
+            while (this.pictureBoxRocket.Location.Y != this.ClientSize.Height + SIZE_ASTEROID)
+            {
+                pictureBoxRocket.Location 
+                    = new Point(
+                        pictureBoxRocket.Location.X,
+                        pictureBoxRocket.Location.Y + 1);
+            }
+            if (pictureBoxRocket.Location.Y == this.ClientSize.Height + SIZE_ASTEROID)
+            {
+                Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> delete Rocket");
+                //this.tasks.RemoveAt(0);
+                this.Controls.Remove(this.pictureBoxRocket);        // FIX: HACK: ???
+                pictureBoxRocket?.Dispose();  // удаление ракеты.   // FIX: HACK: ???
+            }
+
+            this.isGameContinues = true;
         }
 
         private PictureBox CreateAsteroid(int x)
