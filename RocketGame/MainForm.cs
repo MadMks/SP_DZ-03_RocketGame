@@ -29,6 +29,7 @@ namespace RocketGame
 
         // temp
         //private PictureBox pictureBox = null;
+        private bool temp = false;
 
         public MainForm()
         {
@@ -65,14 +66,35 @@ namespace RocketGame
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
+            // Старт игры.
+
+            // Добавление ракеты.
+            this.AddRocket();
+
+            // Старт метода поверки столкновения.
+            Task taskIsCollision = Task.Factory.StartNew(this.CollisionCheck);
+
             TimerCallback timerCallback = new TimerCallback(TimerTick);
-            /*Timer */timer = new Timer(timerCallback);
+            /*Timer */
+            timer = new Timer(timerCallback);
 
             // TODO: рандомный интервал для падений.
             timer.Change(1000, 100);
 
-            // Добавление ракеты.
-            this.AddRocket();
+        }
+
+        private void CollisionCheck()
+        {
+            while (true)
+            {
+                Thread.Sleep(100);
+                //Console.WriteLine("check ---------");
+
+                if (this.temp)  // TODO: вместо temp реализация проверки наложения.
+                {
+                    timer.Change(Timeout.Infinite, 0);
+                }
+            }
         }
 
         private void TimerTick(object state)
@@ -89,7 +111,7 @@ namespace RocketGame
 
             // testing
             Console.WriteLine(tasks.Count);
-            Console.WriteLine(this.Controls.Count);
+            //Console.WriteLine($"Controls.Count = {this.Controls.Count}");
         }
 
         private int GetRandomXCoordinate()
@@ -113,14 +135,17 @@ namespace RocketGame
             while (box.Location.Y != this.ClientSize.Height)
             {
                 Thread.Sleep(this.fallingSpeed);
-                box.Location = new Point(box.Location.X, box.Location.Y + 1);
+                if (temp == false)
+                {
+                    box.Location = new Point(box.Location.X, box.Location.Y + 1);
+                }
             }
 
             if (box.Location.Y == this.ClientSize.Height)
             {
                 Console.WriteLine(">>>>> delete 0");
                 this.tasks.RemoveAt(0);
-                box.Dispose();  // удаление ненужного астероида.
+                box.Dispose();  // удаление ненужного (упавшего) астероида.
             }
         }
 
@@ -145,7 +170,9 @@ namespace RocketGame
         private void buttonStop_Click(object sender, EventArgs e)
         {
             // TODO: уничтожение таймера.
-            this.timer.Dispose();
+            //this.timer.Dispose();
+
+            temp = true;
         }
     }
 }
