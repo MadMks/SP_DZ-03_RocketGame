@@ -15,7 +15,7 @@ namespace RocketGame
     public partial class MainForm : Form
     {
         private const int SIZE_ASTEROID = 20;
-        private const int AMOUNT_OF_ASTEROIDS_TASK = 2;
+        private const int AMOUNT_OF_ASTEROIDS_TASK = 3;
         private List<Task> tasks = null;
 
         private Random random = null;
@@ -44,13 +44,12 @@ namespace RocketGame
             TimerCallback timerCallback = new TimerCallback(TimerTick);
             Timer timer = new Timer(timerCallback);
 
-            timer.Change(1000, 2000);
+            // TODO: рандомный интервал для падений.
+            timer.Change(1000, 100);
         }
 
         private void TimerTick(object state)
         {
-            // TODO: рандомно получать X - размещение астероида. 
-
             if (this.tasks.Count < AMOUNT_OF_ASTEROIDS_TASK)
             {
                 this.tasks.Add(
@@ -59,6 +58,7 @@ namespace RocketGame
                         )
                     );
             }
+            Console.WriteLine(tasks.Count);
         }
 
         private int GetRandomXCoordinate()
@@ -70,13 +70,25 @@ namespace RocketGame
         {
             Console.WriteLine("Старт метода - AsteroidLaunch");
 
+            // Создаем астероид.
             PictureBox box = this.CreateAsteroid(x);
 
-            // TODO: включить падение астероида.
+            // Включаем падение астероида.
+            StartOfTheFall(box);
+        }
+
+        private void StartOfTheFall(PictureBox box)
+        {
             while (box.Location.Y != this.ClientSize.Height)
             {
                 Thread.Sleep(this.fallingSpeed);
                 box.Location = new Point(box.Location.X, box.Location.Y + 1);
+            }
+
+            if (box.Location.Y == this.ClientSize.Height)
+            {
+                Console.WriteLine(">>>>> delete 0");
+                this.tasks.RemoveAt(0);
             }
         }
 
