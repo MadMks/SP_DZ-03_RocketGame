@@ -14,6 +14,9 @@ namespace RocketGame
 {
     public partial class MainForm : Form
     {
+        private const int SIZE_ROCKET_X = 20;
+        private const int SIZE_ROCKET_Y = 20;
+
         private const int SIZE_ASTEROID = 20;
         private const int AMOUNT_OF_ASTEROIDS_TASK = 3;
         private List<Task> tasks = null;
@@ -39,6 +42,25 @@ namespace RocketGame
             this.fallingSpeed = 1;
         }
 
+        private void AddRocket()
+        {
+            PictureBox pictureBox = new PictureBox();
+            pictureBox.BackColor = Color.Green;
+            pictureBox.Size = new Size(SIZE_ROCKET_X, SIZE_ROCKET_Y);
+            pictureBox.Location = this.StartPointRocket();
+            pictureBox.Visible = true;
+
+            this.Controls.Add(pictureBox);
+        }
+
+        private Point StartPointRocket()
+        {
+            Point point = new Point();
+            point.X = (this.ClientSize.Width / 2) - (SIZE_ROCKET_X / 2);
+            point.Y = this.ClientSize.Height - SIZE_ROCKET_Y;
+            return point;
+        }
+
         private void buttonStart_Click(object sender, EventArgs e)
         {
             TimerCallback timerCallback = new TimerCallback(TimerTick);
@@ -46,6 +68,9 @@ namespace RocketGame
 
             // TODO: рандомный интервал для падений.
             timer.Change(1000, 100);
+
+            // Добавление ракеты.
+            this.AddRocket();
         }
 
         private void TimerTick(object state)
