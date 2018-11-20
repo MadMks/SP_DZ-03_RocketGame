@@ -24,6 +24,8 @@ namespace RocketGame
         private Random random = null;
         private int fallingSpeed;
 
+        private Timer timer = null;
+
 
         // temp
         //private PictureBox pictureBox = null;
@@ -64,7 +66,7 @@ namespace RocketGame
         private void buttonStart_Click(object sender, EventArgs e)
         {
             TimerCallback timerCallback = new TimerCallback(TimerTick);
-            Timer timer = new Timer(timerCallback);
+            /*Timer */timer = new Timer(timerCallback);
 
             // TODO: рандомный интервал для падений.
             timer.Change(1000, 100);
@@ -83,7 +85,11 @@ namespace RocketGame
                         )
                     );
             }
+
+
+            // testing
             Console.WriteLine(tasks.Count);
+            Console.WriteLine(this.Controls.Count);
         }
 
         private int GetRandomXCoordinate()
@@ -114,6 +120,7 @@ namespace RocketGame
             {
                 Console.WriteLine(">>>>> delete 0");
                 this.tasks.RemoveAt(0);
+                box.Dispose();  // удаление ненужного астероида.
             }
         }
 
@@ -133,6 +140,12 @@ namespace RocketGame
         private void ShowAsteroid(PictureBox pictureBox)
         {
             this.Controls.Add(pictureBox);
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            // TODO: уничтожение таймера.
+            this.timer.Dispose();
         }
     }
 }
