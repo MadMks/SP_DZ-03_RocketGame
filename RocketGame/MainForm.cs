@@ -19,6 +19,9 @@ namespace RocketGame
 
         private const int SIZE_ASTEROID = 20;
         private const int AMOUNT_OF_ASTEROIDS_TASK = 3;
+
+        private const int DISTANCE = 50;
+
         private List<Task> tasks = null;
 
         private Random random = null;
@@ -32,6 +35,8 @@ namespace RocketGame
         private bool isGameContinues = true;
 
         private Button buttonStart = null;
+
+        //private Task taskRocketMovement = null;
 
         // tes
         Rectangle rectRocket = new Rectangle();
@@ -61,8 +66,64 @@ namespace RocketGame
             this.buttonStart.Click += buttonStart_Click;
             this.Controls.Add(this.buttonStart);
 
-            // test
+            this.KeyPreview = true;
 
+            this.KeyDown += MainForm_KeyDown;
+        }
+        
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            Console.WriteLine();
+            Console.WriteLine(e.KeyData);
+            Console.WriteLine();
+
+            TimerCallback timerCallback = new TimerCallback(MoveLeft);
+            Timer timer = new Timer(timerCallback);
+
+            if (e.KeyData == Keys.Left)
+            {
+                timer.Dispose();
+                //this.MoveLeft();
+                timerCallback = MoveLeft;
+                timer = new Timer(timerCallback);
+                timer.Change(0, 0);
+            }
+            else if (e.KeyData == Keys.Right)
+            {
+                timer.Dispose();
+                //this.MoveRight();
+                timerCallback = MoveRight;
+                timer = new Timer(timerCallback);
+                timer.Change(0, 0);
+            }
+        }
+
+        private void MoveRight(object state)
+        {
+            int i = 0;
+            while (i < DISTANCE)
+            {
+                this.pictureBoxRocket.Location
+                    = new Point(
+                        this.pictureBoxRocket.Location.X + 1,
+                        this.pictureBoxRocket.Location.Y
+                        );
+                i++;
+            }
+        }
+
+        private void MoveLeft(object state)
+        {
+            int i = 0;
+            while (i < DISTANCE)
+            {
+                this.pictureBoxRocket.Location
+                = new Point(
+                    this.pictureBoxRocket.Location.X - 1,
+                    this.pictureBoxRocket.Location.Y
+                    );
+                i++;
+            }
         }
 
         private Point GetCenterPointOfForm()
@@ -87,10 +148,15 @@ namespace RocketGame
 
             // test
             pictureBoxRocket.LocationChanged += PictureBoxRocket_LocationChanged;
+            this.pictureBoxRocket.Focus();
+
+            // Событие на движение ракеты.
+            //this.taskRocketMovement = Task.Factory.StartNew(this.CheckRocketMovement);
 
             rectRocket = this.pictureBoxRocket.DisplayRectangle;
             rectRocket.Location = this.pictureBoxRocket.Location;
         }
+
 
         private void PictureBoxRocket_LocationChanged(object sender, EventArgs e)
         {
@@ -246,15 +312,5 @@ namespace RocketGame
         }
 
 
-
-
-        // Для тестирования.
-        private void buttonStop_Click(object sender, EventArgs e)
-        {
-            // TODO: уничтожение таймера.
-            //this.timer.Dispose();
-
-            isGameContinues = false;
-        }
     }
 }
