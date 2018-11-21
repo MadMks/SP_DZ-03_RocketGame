@@ -31,6 +31,8 @@ namespace RocketGame
 
         private bool isGameContinues = true;
 
+        private Button buttonStart = null;
+
         // tes
         Rectangle rectRocket = new Rectangle();
 
@@ -52,9 +54,25 @@ namespace RocketGame
             this.tasks = new List<Task>();
             this.fallingSpeed = 1;
 
+            this.buttonStart = new Button();
+            this.buttonStart.Visible = true;
+            this.buttonStart.Text = "Старт";
+            this.buttonStart.Location = this.GetCenterPointOfForm();
+            this.buttonStart.Click += buttonStart_Click;
+            this.Controls.Add(this.buttonStart);
 
             // test
 
+        }
+
+        private Point GetCenterPointOfForm()
+        {
+            Point pointBtnStart = new Point(
+                (this.ClientSize.Width / 2) - (this.buttonStart.Width / 2),
+                (this.ClientSize.Height / 2) - (this.buttonStart.Height / 2)
+                );
+
+            return pointBtnStart;
         }
 
         private void AddRocket()
@@ -92,37 +110,10 @@ namespace RocketGame
         {
             // Старт игры.
 
-            // Настройки по умолчанию.
-            //this.isGameContinues = true;
-            //foreach (var item in this.Controls)
-            //{
-            //    if (item is PictureBox)
-            //    {
-            //        this.Controls.Remove(item as PictureBox);
-            //    }
-            //}
-
-            //if (this.isGameContinues == false)
-            //{
-            //    Console.WriteLine("Controls.Count" + this.Controls.Count);
-            //    for (int i = 0; i < this.Controls.Count; i++)
-            //    {
-            //        Console.WriteLine(this.Controls[i].GetType().Name);
-            //        if (this.Controls[i] is PictureBox)
-            //        {
-            //            Console.WriteLine("remove " + i);
-            //            //this.Controls.RemoveAt(i);
-            //            (this.Controls[i] as PictureBox).Dispose();
-            //        }
-            //    }
-            //    this.isGameContinues = true;
-            //}
+            this.GameDesignSettings();
 
             // Добавление ракеты.
             this.AddRocket();
-
-            // Старт метода поверки столкновения.
-            //Task taskIsCollision = Task.Factory.StartNew(this.CollisionCheck);
 
             TimerCallback timerCallback = new TimerCallback(TimerTick);
             /*Timer */
@@ -133,72 +124,9 @@ namespace RocketGame
 
         }
 
-        private void CollisionCheck()
+        private void GameDesignSettings()
         {
-            while (true)
-            {
-                Thread.Sleep(100);
-                Console.WriteLine("check ---------");
-
-                //Control.ControlCollection collection = new Control.ControlCollection(this);
-                //this.Invoke(new Action<Control.ControlCollection>(TestMethod), collection);
-                //List<Control> controls = new List<Control>();
-                //this.Invoke(new Action<List<Control>>(TestMethod), controls);
-
-                //Rectangle rectRocket = this.pictureBoxRocket.DisplayRectangle;
-                //rectRocket.Location = this.pictureBoxRocket.Location;
-                //Console.WriteLine("=================");
-                //Console.WriteLine("=================" + controls.Count);
-
-                //foreach (var item in controls)
-                //{
-                //    if (item.GetContainerControl() is PictureBox)
-                //    {
-                //        Rectangle rectAsteroid = (item.GetContainerControl() as PictureBox).DisplayRectangle;
-                //        rectAsteroid.Location = (item.GetContainerControl() as PictureBox).Location;
-                //        Console.WriteLine("========================---------" + rectRocket.IntersectsWith(rectAsteroid));
-                //        if (rectRocket.IntersectsWith(rectAsteroid))
-                //        {
-                //            Console.WriteLine("========================---------");
-                //            timer.Change(Timeout.Infinite, 0);
-                //        }
-                //    }
-                //}
-
-
-                //for (int i = 0; i < controls.Count; i++)
-                //{
-                //    Console.WriteLine("---------------------" + this.Controls[i].GetType().Name);
-                //    if (controls[i] is PictureBox)
-                //    {
-                //        Rectangle rectAsteroid = (controls[i] as PictureBox).DisplayRectangle;
-                //        rectAsteroid.Location = (controls[i] as PictureBox).Location;
-                //        Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + rectRocket.IntersectsWith(rectAsteroid));
-                //        if (rectRocket.IntersectsWith(rectAsteroid))
-                //        {
-                //            Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                //            //timer.Change(Timeout.Infinite, 0);
-                //            timer.Dispose();
-                //        }
-                //    }
-                //}
-            }
-        }
-
-        private void TestMethod(List<Control> obj)
-        {
-            //obj = this.Controls;
-            //obj.AddRange(this.Controls.Find(null, false));
-
-            foreach (Control item in this.Controls)
-            {
-                obj.Add(item);
-            }
-
-            //for (int i = 0; i < this.Controls.Count; i++)
-            //{
-            //    obj.Add(this.Controls[i]);
-            //}
+            this.buttonStart.Visible = false;
         }
 
         private void TimerTick(object state)
@@ -255,6 +183,8 @@ namespace RocketGame
                             this.isGameContinues = false;
                             MessageBox.Show("Game over");
                             this.RocketFall();
+
+                            this.MenuDesignSettings();
                         }
                     }
                 }
@@ -266,6 +196,11 @@ namespace RocketGame
                 this.tasks.RemoveAt(0);
                 box.Dispose();  // удаление ненужного (упавшего) астероида.
             }
+        }
+
+        private void MenuDesignSettings()
+        {
+            this.buttonStart.Visible = true;
         }
 
         private void RocketFall()
