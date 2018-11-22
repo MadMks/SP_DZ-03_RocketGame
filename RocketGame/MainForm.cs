@@ -74,8 +74,6 @@ namespace RocketGame
             this.KeyDown += MainForm_KeyDown;
 
 
-            // test
-            //GameOver = false;
         }
         
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
@@ -106,6 +104,11 @@ namespace RocketGame
             int i = 0;
             while (i < DISTANCE)
             {
+                if (pictureBoxRocket.Location.X + 1 > this.ClientSize.Width - SIZE_ROCKET_X)
+                {
+                    return;
+                }
+
                 this.pictureBoxRocket.Location
                     = new Point(
                         this.pictureBoxRocket.Location.X + 1,
@@ -120,6 +123,11 @@ namespace RocketGame
             int i = 0;
             while (i < DISTANCE)
             {
+                if (pictureBoxRocket.Location.X - 1 < 0)
+                {
+                    return;
+                }
+
                 this.pictureBoxRocket.Location
                 = new Point(
                     this.pictureBoxRocket.Location.X - 1,
@@ -141,7 +149,7 @@ namespace RocketGame
 
         private void AddRocket()
         {
-            /*PictureBox */pictureBoxRocket = new PictureBox();
+            pictureBoxRocket = new PictureBox();
             pictureBoxRocket.BackColor = Color.Green;
             pictureBoxRocket.Size = new Size(SIZE_ROCKET_X, SIZE_ROCKET_Y);
             pictureBoxRocket.Location = this.StartPointRocket();
@@ -149,7 +157,6 @@ namespace RocketGame
 
             this.Controls.Add(pictureBoxRocket);
 
-            // test
             pictureBoxRocket.LocationChanged += PictureBoxRocket_LocationChanged;
             this.pictureBoxRocket.Focus();
 
