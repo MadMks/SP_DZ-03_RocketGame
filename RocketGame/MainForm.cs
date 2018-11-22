@@ -15,13 +15,15 @@ namespace RocketGame
 {
     public partial class MainForm : Form
     {
+        private const int FALL_INTERVAL = 100;
+
         private const int SIZE_ROCKET_X = 20;
         private const int SIZE_ROCKET_Y = 40;
 
         private const int SIZE_ASTEROID = 20;
         private const int AMOUNT_OF_ASTEROIDS_TASK = 3;
 
-        private const int DISTANCE = 50;
+        private const int DISTANCE = 35;
 
         private List<Task> tasks = null;
 
@@ -53,7 +55,7 @@ namespace RocketGame
         {
             this.random = new Random();
             this.tasks = new List<Task>();
-            this.fallingSpeed = 1;
+            this.fallingSpeed = 2;
 
             this.buttonStart = new Button();
             this.buttonStart.Visible = true;
@@ -65,7 +67,6 @@ namespace RocketGame
             this.KeyPreview = true;
 
             this.KeyDown += MainForm_KeyDown;
-
 
         }
         
@@ -190,7 +191,7 @@ namespace RocketGame
             timer = new Timer(timerCallback);
 
             // TODO: рандомный интервал для падений.
-            timer.Change(1000, 100);
+            timer.Change(1000, FALL_INTERVAL);
 
         }
 
@@ -253,7 +254,6 @@ namespace RocketGame
                             this.RocketFall();
 
                             this.MenuDesignSettings();
-
                         }
                     }
                 }
