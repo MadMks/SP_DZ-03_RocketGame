@@ -75,7 +75,7 @@ namespace RocketGame
 
 
             // test
-            GameOver = false;
+            //GameOver = false;
         }
         
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
@@ -186,7 +186,7 @@ namespace RocketGame
 
 
             // test method Finish GameOver
-            Task.Factory.StartNew(this.NewTestmEthodFinish);
+            //Task.Factory.StartNew(this.NewTestmEthodFinish);
 
             TimerCallback timerCallback = new TimerCallback(TimerTick);
             /*Timer */
@@ -260,10 +260,8 @@ namespace RocketGame
                             //timer.Change(Timeout.Infinite, 0);
                             timer.Dispose();
                             this.isGameContinues = false;
-                            //MessageBox.Show("Game over",
-                            //    "Результат",
-                            //    MessageBoxButtons.OK,
-                            //    MessageBoxIcon.Information);
+                            MessageBox.Show("Game over",
+                                "Результат");
 
 
                             this.RocketFall();
@@ -287,21 +285,21 @@ namespace RocketGame
             
         }
 
-        private void NewTestmEthodFinish()
-        {
-            while (true)
-            {
-                if (GameOver)
-                {
-                    Task.WaitAll();
-                    Task.WhenAll(this.tasks)
-                        .ContinueWith(mb => MessageBox.Show("1"));
+        //private void NewTestmEthodFinish()
+        //{
+        //    while (true)
+        //    {
+        //        if (GameOver)
+        //        {
+        //            Task.WaitAll();
+        //            Task.WhenAll(this.tasks)
+        //                .ContinueWith(mb => MessageBox.Show("1"));
 
-                    GameOver = false;
-                    return;
-                }
-            }
-        }
+        //            GameOver = false;
+        //            return;
+        //        }
+        //    }
+        //}
 
         private void MenuDesignSettings()
         {
