@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RocketGame.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,7 +16,7 @@ namespace RocketGame
     public partial class MainForm : Form
     {
         private const int SIZE_ROCKET_X = 20;
-        private const int SIZE_ROCKET_Y = 20;
+        private const int SIZE_ROCKET_Y = 40;
 
         private const int SIZE_ASTEROID = 20;
         private const int AMOUNT_OF_ASTEROIDS_TASK = 3;
@@ -36,18 +37,10 @@ namespace RocketGame
 
         private Button buttonStart = null;
 
-        //private Task taskRocketMovement = null;
 
         
         Rectangle rectRocket = new Rectangle();
 
-        // test
-        private bool GameOver;
-
-
-        // temp
-        //private PictureBox pictureBox = null;
-        //private bool temp = false;
 
         public MainForm()
         {
@@ -150,7 +143,9 @@ namespace RocketGame
         private void AddRocket()
         {
             pictureBoxRocket = new PictureBox();
-            pictureBoxRocket.BackColor = Color.Green;
+            //pictureBoxRocket.BackColor = Color.Green;
+            pictureBoxRocket.Image = Resources.Rocket;
+            pictureBoxRocket.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxRocket.Size = new Size(SIZE_ROCKET_X, SIZE_ROCKET_Y);
             pictureBoxRocket.Location = this.StartPointRocket();
             pictureBoxRocket.Visible = true;
@@ -160,9 +155,7 @@ namespace RocketGame
             pictureBoxRocket.LocationChanged += PictureBoxRocket_LocationChanged;
             this.pictureBoxRocket.Focus();
 
-            // Событие на движение ракеты.
-            //this.taskRocketMovement = Task.Factory.StartNew(this.CheckRocketMovement);
-
+           
             rectRocket = this.pictureBoxRocket.DisplayRectangle;
             rectRocket.Location = this.pictureBoxRocket.Location;
         }
@@ -192,11 +185,8 @@ namespace RocketGame
             this.AddRocket();
 
 
-            // test method Finish GameOver
-            //Task.Factory.StartNew(this.NewTestmEthodFinish);
-
             TimerCallback timerCallback = new TimerCallback(TimerTick);
-            /*Timer */
+
             timer = new Timer(timerCallback);
 
             // TODO: рандомный интервал для падений.
@@ -221,10 +211,6 @@ namespace RocketGame
             }
 
 
-            // testing
-            //Console.WriteLine(tasks.Count);
-            //Console.WriteLine($"Controls.Count = {this.Controls.Count}");
-            
         }
 
         private int GetRandomXCoordinate()
@@ -234,9 +220,6 @@ namespace RocketGame
 
         private void AsteroidLaunch(int x)
         {
-            Console.WriteLine("\nСтарт метода - AsteroidLaunch");
-            Console.WriteLine("Task.CurrentId" + Task.CurrentId);
-
             // Создаем астероид.
             PictureBox box = this.CreateAsteroid(x);
 
@@ -246,8 +229,6 @@ namespace RocketGame
 
         private void StartOfTheFall(PictureBox box)
         {
-            Console.WriteLine("Старт метода - StartOfTheFall");
-            Console.WriteLine("Task.CurrentId" + Task.CurrentId);
             while (box.Location.Y != this.ClientSize.Height)
             {
                 
@@ -263,8 +244,6 @@ namespace RocketGame
                         rectAsteroid.Location = box.Location;
                         if (rectRocket.IntersectsWith(rectAsteroid))
                         {
-                            Console.WriteLine("======================== StartOfTheFall");
-                            //timer.Change(Timeout.Infinite, 0);
                             timer.Dispose();
                             this.isGameContinues = false;
                             MessageBox.Show("Game over",
@@ -275,7 +254,6 @@ namespace RocketGame
 
                             this.MenuDesignSettings();
 
-                            this.GameOver = true;
                         }
                     }
                 }
@@ -283,36 +261,17 @@ namespace RocketGame
 
             if (box.Location.Y == this.ClientSize.Height)
             {
-                Console.WriteLine(">>>>> delete 0");
-
                 this.tasks.RemoveAt(0); // Удаление из списка активных тасков.
                 box.Dispose();  // удаление ненужного (упавшего) астероида.
             }
-            Console.WriteLine("End < StartOfTheFall --- Id" + Task.CurrentId + "\n");
-            
+
         }
 
-        //private void NewTestmEthodFinish()
-        //{
-        //    while (true)
-        //    {
-        //        if (GameOver)
-        //        {
-        //            Task.WaitAll();
-        //            Task.WhenAll(this.tasks)
-        //                .ContinueWith(mb => MessageBox.Show("1"));
 
-        //            GameOver = false;
-        //            return;
-        //        }
-        //    }
-        //}
 
         private void MenuDesignSettings()
         {
             this.buttonStart.Visible = true;
-
-            //this.buttonStart.Focus();
         }
 
         private void RocketFall()
@@ -330,8 +289,6 @@ namespace RocketGame
             }
             if (pictureBoxRocket.Location.Y == this.ClientSize.Height + SIZE_ASTEROID)
             {
-                Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> delete Rocket");
-                //this.tasks.RemoveAt(0);
                 this.Controls.Remove(this.pictureBoxRocket);        // FIX: HACK: ???
                 pictureBoxRocket?.Dispose();  // удаление ракеты.   // FIX: HACK: ???
             }
@@ -342,7 +299,9 @@ namespace RocketGame
         private PictureBox CreateAsteroid(int x)
         {
             PictureBox pictureBox = new PictureBox();
-            pictureBox.BackColor = Color.Black;
+            //pictureBox.BackColor = Color.Black;
+            pictureBox.Image = Resources.Asteroid;
+            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox.Size = new Size(SIZE_ASTEROID, SIZE_ASTEROID);
             pictureBox.Location = new Point(x, 0 - SIZE_ASTEROID);
             pictureBox.Visible = true;
