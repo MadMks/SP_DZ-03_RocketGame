@@ -10,26 +10,32 @@ using Timer = System.Threading.Timer;
 
 namespace RocketGame
 {
-    class Game
+    public class Game
     {
         private const int AMOUNT_OF_ASTEROIDS_TASK = 3;
 
         private MainForm form = null;
         private Rocket rocket = null;
+        public Rocket Rocket
+        {
+            get { return this.rocket; }
+        }
 
         private Random random = null;
         private Timer timer = null;
 
-        private List<Task> listTasksAsteroids = null;
-
-
+        //private List<Task> listTasksAsteroids = null;
+        public List<Task> ListTasksAsteroids { get; set; }
+        public bool IsContinues { get; set; }
 
         public Game(MainForm form)
         {
             this.form = form;
 
+            this.IsContinues = true;
+
             this.random = new Random();
-            this.listTasksAsteroids = new List<Task>();
+            this.ListTasksAsteroids = new List<Task>();
 
             rocket = new Rocket();
             rocket.Location = this.StartPointRocket(form);
@@ -48,14 +54,14 @@ namespace RocketGame
         {
             ShowRocket();
 
-            AsteroidFallLaunch();
+            AsteroidsFallLaunch();
 
             // test
             Console.WriteLine(form.Controls.Count);
             Console.WriteLine(rocket.Location.ToString());
         }
 
-        private void AsteroidFallLaunch()
+        private void AsteroidsFallLaunch()
         {
             TimerCallback timerCallback = new TimerCallback(TimerTick);
 
@@ -65,11 +71,16 @@ namespace RocketGame
             timer.Change(1000, 100);
         }
 
+        internal void StopFallingAsteroids()
+        {
+            timer.Dispose();
+        }
+
         private void TimerTick(object state)
         {
-            if (this.listTasksAsteroids.Count < AMOUNT_OF_ASTEROIDS_TASK)
+            if (this.ListTasksAsteroids.Count < AMOUNT_OF_ASTEROIDS_TASK)
             {
-                this.listTasksAsteroids.Add(
+                this.ListTasksAsteroids.Add(
                     Task.Factory.StartNew(
                         () => this.AsteroidLaunch(this.GetRandomXCoordinate())
                         )
@@ -86,10 +97,9 @@ namespace RocketGame
         {
             // Создаем астероид.
             Asteroid asteroid = new Asteroid(form, x);
-            
-
             // Включаем падение астероида.
-            //StartOfTheFall(box);
+            //form.Invoke(new Action(asteroid.StartOfTheFall));
+            asteroid.StartOfTheFall();
         }
 
         private void ShowRocket()

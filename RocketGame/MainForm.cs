@@ -13,6 +13,11 @@ namespace RocketGame
     public partial class MainForm : Form
     {
         private Game game = null;
+        public Game GameProcess
+        {
+            get { return game; }
+            set { game = value; }
+        }
 
         private Button buttonStart = null;
 
