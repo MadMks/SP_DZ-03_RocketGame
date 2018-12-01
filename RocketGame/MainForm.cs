@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -103,13 +104,26 @@ namespace RocketGame
                     return;
                 }
 
-                this.pictureBoxRocket.Location
-                    = new Point(
-                        this.pictureBoxRocket.Location.X + 1,
-                        this.pictureBoxRocket.Location.Y
-                        );
+                //this.pictureBoxRocket.Location
+                //    = new Point(
+                //        this.pictureBoxRocket.Location.X + 1,
+                //        this.pictureBoxRocket.Location.Y
+                //        );
+                this.Invoke(
+                    new Action<PictureBox>(this.StepRight),
+                    this.pictureBoxRocket
+                    );
                 i++;
             }
+        }
+
+        private void StepRight(PictureBox rocket)
+        {
+            rocket.Location
+                = new Point(
+                    rocket.Location.X + 1,
+                    rocket.Location.Y
+                    );
         }
 
         private void MoveLeft(object state)
@@ -122,13 +136,26 @@ namespace RocketGame
                     return;
                 }
 
-                this.pictureBoxRocket.Location
-                = new Point(
-                    this.pictureBoxRocket.Location.X - 1,
-                    this.pictureBoxRocket.Location.Y
+                //this.pictureBoxRocket.Location
+                //= new Point(
+                //    this.pictureBoxRocket.Location.X - 1,
+                //    this.pictureBoxRocket.Location.Y
+                //    );
+                this.Invoke(
+                    new Action<PictureBox>(this.StepLeft),
+                    this.pictureBoxRocket
                     );
                 i++;
             }
+        }
+
+        private void StepLeft(PictureBox rocket)
+        {
+            rocket.Location
+            = new Point(
+                rocket.Location.X - 1,
+                rocket.Location.Y
+                );
         }
 
         private Point GetCenterPointOfForm()
@@ -237,7 +264,10 @@ namespace RocketGame
                 {
                     Thread.Sleep(this.fallingSpeed);
 
-                    box.Location = new Point(box.Location.X, box.Location.Y + 1);
+                    this.Invoke(
+                        new Action<PictureBox>(this.MoveDownAsteroid), 
+                        box
+                        );
 
                     if (this.pictureBoxRocket != null)
                     {
@@ -253,21 +283,37 @@ namespace RocketGame
 
                             this.RocketFall();
 
-                            this.MenuDesignSettings();
+                            this.Invoke(
+                                new Action(this.MenuDesignSettings)
+                                );
                         }
                     }
                 }
             }
-
+            Console.WriteLine("Tasks[0]: " + tasks[0].Id);
             if (box.Location.Y == this.ClientSize.Height)
             {
                 this.tasks.RemoveAt(0); // Удаление из списка активных тасков.
-                box.Dispose();  // удаление ненужного (упавшего) астероида.
+                //box.Dispose();  // удаление ненужного (упавшего) астероида.
+                this.Invoke(
+                    new Action<PictureBox>(this.AsteroidDestruction),
+                    box
+                    );
             }
+            Process process = Process.GetCurrentProcess();
 
+            Console.WriteLine("\nCount: " + process.Threads.Count + "\n");
         }
 
+        private void AsteroidDestruction(PictureBox asteroid)
+        {
+            asteroid?.Dispose();
+        }
 
+        private void MoveDownAsteroid(PictureBox pBox)
+        {
+            pBox.Location = new Point(pBox.Location.X, pBox.Location.Y + 1);
+        }
 
         private void MenuDesignSettings()
         {
@@ -282,18 +328,41 @@ namespace RocketGame
 
             while (this.pictureBoxRocket.Location.Y != this.ClientSize.Height + SIZE_ASTEROID)
             {
-                pictureBoxRocket.Location 
-                    = new Point(
-                        pictureBoxRocket.Location.X,
-                        pictureBoxRocket.Location.Y + 1);
+                //pictureBoxRocket.Location 
+                //    = new Point(
+                //        pictureBoxRocket.Location.X,
+                //        pictureBoxRocket.Location.Y + 1);
+
+                this.Invoke(
+                        new Action<PictureBox>(this.MoveDownAsteroid),
+                        pictureBoxRocket
+                        );
             }
             if (pictureBoxRocket.Location.Y == this.ClientSize.Height + SIZE_ASTEROID)
             {
-                this.Controls.Remove(this.pictureBoxRocket);        // FIX: HACK: ???
-                pictureBoxRocket?.Dispose();  // удаление ракеты.   // FIX: HACK: ???
+                //this.Controls.Remove(this.pictureBoxRocket);        // FIX: HACK: ???
+                this.Invoke(
+                    new Action<PictureBox>(this.RemovingRocketFromForm),
+                    this.pictureBoxRocket
+                    );
+                //pictureBoxRocket?.Dispose();  // удаление ракеты.   // FIX: HACK: ???
+                this.Invoke(
+                    new Action<PictureBox>(this.RocketDestruction),
+                    this.pictureBoxRocket
+                    );
             }
 
             this.isGameContinues = true;
+        }
+
+        private void RocketDestruction(PictureBox obj)
+        {
+            pictureBoxRocket?.Dispose();
+        }
+
+        private void RemovingRocketFromForm(PictureBox rocket)
+        {
+            this.Controls.Remove(rocket);
         }
 
         private PictureBox CreateAsteroid(int x)
