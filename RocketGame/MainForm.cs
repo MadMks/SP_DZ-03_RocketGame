@@ -104,11 +104,6 @@ namespace RocketGame
                     return;
                 }
 
-                //this.pictureBoxRocket.Location
-                //    = new Point(
-                //        this.pictureBoxRocket.Location.X + 1,
-                //        this.pictureBoxRocket.Location.Y
-                //        );
                 this.Invoke(
                     new Action<PictureBox>(this.StepRight),
                     this.pictureBoxRocket
@@ -136,11 +131,6 @@ namespace RocketGame
                     return;
                 }
 
-                //this.pictureBoxRocket.Location
-                //= new Point(
-                //    this.pictureBoxRocket.Location.X - 1,
-                //    this.pictureBoxRocket.Location.Y
-                //    );
                 this.Invoke(
                     new Action<PictureBox>(this.StepLeft),
                     this.pictureBoxRocket
@@ -294,7 +284,7 @@ namespace RocketGame
             if (box.Location.Y == this.ClientSize.Height)
             {
                 this.tasks.RemoveAt(0); // Удаление из списка активных тасков.
-                //box.Dispose();  // удаление ненужного (упавшего) астероида.
+                // Удаление ненужного (упавшего) астероида.
                 this.Invoke(
                     new Action<PictureBox>(this.AsteroidDestruction),
                     box
@@ -328,11 +318,6 @@ namespace RocketGame
 
             while (this.pictureBoxRocket.Location.Y != this.ClientSize.Height + SIZE_ASTEROID)
             {
-                //pictureBoxRocket.Location 
-                //    = new Point(
-                //        pictureBoxRocket.Location.X,
-                //        pictureBoxRocket.Location.Y + 1);
-
                 this.Invoke(
                         new Action<PictureBox>(this.MoveDownAsteroid),
                         pictureBoxRocket
@@ -340,12 +325,11 @@ namespace RocketGame
             }
             if (pictureBoxRocket.Location.Y == this.ClientSize.Height + SIZE_ASTEROID)
             {
-                //this.Controls.Remove(this.pictureBoxRocket);        // FIX: HACK: ???
                 this.Invoke(
                     new Action<PictureBox>(this.RemovingRocketFromForm),
                     this.pictureBoxRocket
                     );
-                //pictureBoxRocket?.Dispose();  // удаление ракеты.   // FIX: HACK: ???
+ 
                 this.Invoke(
                     new Action<PictureBox>(this.RocketDestruction),
                     this.pictureBoxRocket
